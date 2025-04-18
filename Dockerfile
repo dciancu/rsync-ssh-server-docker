@@ -17,7 +17,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache --mount=target=/var/cache/apt,t
     && apt-get upgrade -y \
     && apt-get dist-upgrade -y \
     && apt-get --purge autoremove -y \
-    && apt-get install -y openssh-server rsync \
+    && apt-get install -y openssh-server rsync python3 \
     && sed -Ei '/^(#| |\t)*HostKey( |\t).*/d' /etc/ssh/sshd_config \
     && sed -Ei 's/^(#| |\t)*Port( |\t).*/Port 2222/' /etc/ssh/sshd_config \
     && sed -Ei 's/^(#| |\t)*PasswordAuthentication( |\t).*/PasswordAuthentication no/' /etc/ssh/sshd_config \
