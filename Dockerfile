@@ -2,8 +2,8 @@ FROM debian:12-slim
 
 SHELL ["/usr/bin/env", "bash", "-c"]
 
-ARG UID
-ARG GID
+ARG USER_UID
+ARG USER_GID
 ARG DEBIAN_FRONTEND='noninteractive'
 
 WORKDIR /root
@@ -32,8 +32,8 @@ RUN --mount=target=/var/lib/apt/lists,type=cache --mount=target=/var/cache/apt,t
     && echo 'HostKey /ssh/ssh_host_ed25519_key' >> /etc/ssh/sshd_config \
     && echo 'AllowUsers rsync' >> /etc/ssh/sshd_config \
     && rm /etc/ssh/ssh_host_* \
-    && addgroup --gid "$GID" rsync \
-    && adduser --uid "$UID" --gid "$GID" --gecos '' --shell /bin/bash --disabled-password --no-create-home rsync \
+    && addgroup --gid "$USER_GID" rsync \
+    && adduser --uid "$USER_UID" --gid "$USER_GID" --gecos '' --shell /bin/bash --disabled-password --no-create-home rsync \
     && mkdir /home/rsync \
     && chown rsync:rsync /home/rsync \
     && chmod 700 /home/rsync
