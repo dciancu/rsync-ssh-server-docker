@@ -1,0 +1,16 @@
+services:
+  rsync-ssh-server:
+    container_name: rsync-ssh-server
+    image: dciancu/rsync-ssh-server
+    init: true
+    read_only: true
+    restart: unless-stopped
+    volumes:
+      - ./data/ssh:/ssh:ro
+      - ./data/backup:/backup
+    ports:
+      - "2222:2222/tcp"
+    tmpfs:
+      - /run
+      - /tmp
+      - /home/rsync/.ssh

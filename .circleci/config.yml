@@ -1,0 +1,62 @@
+version: 2.1
+jobs:
+  build-arm:
+    docker:
+      - image: cimg/base:current
+    resource_class: arm.medium
+    working_directory: /mnt/ramdisk
+    environment:
+      BUILD_ARCH: arm
+      BUILDKIT_PROGRESS: plain
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push arm
+          command: ./build.sh
+      - run:
+          name: Prune Docker Images
+          command: docker image prune -f
+  build-x86:
+    docker:
+      - image: cimg/base:current
+    resource_class: medium
+    working_directory: /mnt/ramdisk
+    environment:
+      BUILD_ARCH: x86
+      BUILDKIT_PROGRESS: plain
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push x86
+          command: ./build.sh
+      - run:
+          name: Prune Docker Images
+          command: docker image prune -f
+  publish:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    working_directory: /mnt/ramdisk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Publish
+          command: ./publish.sh
+      - run:
+          name: Prune Docker Images
+          command: docker image prune -f
+
+workflows:
+  build:
+    jobs:
+      - build-arm
+      - build-x86
+      - publish:
+          requires:
+            - build-arm
+            - build-x86
